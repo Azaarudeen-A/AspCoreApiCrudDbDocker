@@ -1,0 +1,6 @@
+@AspCoreApiCrudDbDocker_HostAddress = http://localhost:5080
+
+GET {{AspCoreApiCrudDbDocker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
