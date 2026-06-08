@@ -1,0 +1,41 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+services:
+  # Name of the API service to run in Docker Compose.
+  aspcoreapicruddbdocker:
+    # Tag/name for the built container image.
+    image: aspcoreapicruddbdocker
+    build:
+      # Build from the repository root.
+      context: .
+      # Use the ASP.NET Core Dockerfile in the project folder.
+      dockerfile: AspCoreApiCrudDbDocker/Dockerfile
+    # Start the API only after the SQL Server service is available.
+    depends_on:
+      - sqlserver
+    environment:
+      # Override the default database connection so the API uses the SQL Server container.
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=ProductDb;User Id=sa;Password=Azacet01@;TrustServerCertificate=True;"
+    ports:
+      # Map host port 5080 to container port 5080.
+      - "5080:5080"
+
+  # SQL Server 2022 service used by the API.
+  sqlserver:
+    # Official Microsoft SQL Server 2022 image.
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      # Accept the SQL Server license terms.
+      ACCEPT_EULA: "Y"
+      # Set the SA password for the database instance.
+      MSSQL_SA_PASSWORD: "Azacet01@"
+    ports:
+      # Map host port 1433 to container port 1433 for SQL Server access.
+      - "1433:1433"
+    volumes:
+      # Persist database files across container restarts.
+      - sqlserver_data:/var/opt/mssql
+
+volumes:
+  # Named volume for SQL Server data persistence.
+  sqlserver_data:

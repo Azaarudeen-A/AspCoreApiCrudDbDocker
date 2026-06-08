@@ -1,0 +1,101 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "../home/codespace/.vscode-remote/data/User/workspaceStorage/2be6d762/ms-dotnettools.csdevkit/AspCoreApiCrudDbDocker.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "../home/codespace/.vscode-remote/data/User/workspaceStorage/2be6d762/ms-dotnettools.csdevkit/AspCoreApiCrudDbDocker.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "../home/codespace/.vscode-remote/data/User/workspaceStorage/2be6d762/ms-dotnettools.csdevkit/AspCoreApiCrudDbDocker.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "aspcoreapicruddbdocker:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/AspCoreApiCrudDbDocker/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/AspCoreApiCrudDbDocker/AspCoreApiCrudDbDocker.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "aspcoreapicruddbdocker:latest",
+                "dockerfile": "${workspaceFolder}/AspCoreApiCrudDbDocker/Dockerfile",
+                "context": "${workspaceFolder}",
+                "platform": {
+                    "os": "linux",
+                    "architecture": "amd64"
+                },
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/AspCoreApiCrudDbDocker/AspCoreApiCrudDbDocker.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/AspCoreApiCrudDbDocker/AspCoreApiCrudDbDocker.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": [
+                "docker-build: release"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/AspCoreApiCrudDbDocker/AspCoreApiCrudDbDocker.csproj"
+            }
+        }
+    ]
+}

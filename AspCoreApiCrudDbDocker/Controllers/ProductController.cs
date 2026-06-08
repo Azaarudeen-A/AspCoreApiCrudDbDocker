@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-
+[ApiController]
+[Route("[controller]")]
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
